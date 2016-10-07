@@ -1,0 +1,22 @@
+		body {
+		    background-color: #EEEEEE;
+		    background-image: url();
+		    background-size: 100% 225%;
+		}
+		
+		.hidden-input {
+		    opacity: 0;
+		    position: absolute;
+		    z-index: -1;
+		}
+		
+		input[type=radio]+span {
+		    display: inline-block;
+		    height: 1em;
+		    width: 1em;
+		    border-radius: 4px;
+		}
+		
+		input[type=radio]:checked+span {
+		    background-color: red;
+		}

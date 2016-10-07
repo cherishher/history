@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link href="http://cdn.bootcss.com/ionic/1.3.0/css/ionic.css" rel="stylesheet">
+		<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../static/css/question.css">
+		<title>百载文枢江左</title>
+	</head>
+	<body>
+		<div class="bar bar-header bar-positive">
+			<h1 class="title" style="font-size:large;font-family:微软雅黑">“东南大学校史”系列知识竞赛</h1>
+		</div>
+		<div class="content has-header">
+			{% for item in data %}
+				<div class="row" style="padding-top:5px"></div>
+				<div  class="list card">
+					<div class="item item-avatar" >
+						<image src="../static/images/8.jpg">
+						<h2 style="font-size:x-large">{{item['id']+1}}/10</h2>
+					</div>
+					<div class="item item-body" id="item">
+						<h2>{{item['question']}}</h2>
+						<label  style="font-size: 16px">
+							<input type="radio"  name="{{item['id']}}" value="A">A.{{item['answer1']}}<br>
+						</label>
+						<label style="font-size: 16px">
+							<input type="radio" name="{{item['id']}}" value="B">B.{{item['answer2']}}<br>
+						</label>
+						<label style="font-size: 16px">
+							<input type="radio" name="{{item['id']}}" value="C">C.{{item['answer3']}}<br>
+						</label>
+						<label style="font-size: 16px">
+							<input type="radio" name="{{item['id']}}" value="D">D.{{item['answer4']}}
+						</label>
+					</div>
+				</div>
+			{% end %}
+			<button class="button button-block button-stable" id="submit_btn">提交</button>
+			<div class="bar bar-footer bar-light">
+				<div class="title">©&nbsp;小猴偷米&nbsp;&nbsp;版权所有</div>
+			</div>
+			<p>123</p>
+		</body>
+		<script type="text/javascript">
+		alert("欢迎参与答题。本次答题限时30分钟，将根据总得分情况和答题时间综合进行最终成绩认定，计时开始");
+					var dic = new Array();
+					var now_time = 0;
+					var mydate = new Date();
+					var start_time = (new Date()).valueOf();
+		$(document).ready(function(){
+					$("#submit_btn").bind("click",function(){
+						//发送时间
+						var end_time = (new Date()).valueOf();
+						var usetime = (end_time - start_time)/1000;
+						
+						//获得答案
+						for(var i=0;i<10;i++){
+							var ans = document.getElementsByName(String(i));
+							for(var j=0;j<ans.length;j++){
+									if(ans[j].checked){
+										dic[i] = ans[j].value;
+									}
+								}
+							}
+							//发送答案
+							$.post("/result",
+							{
+								"question0":dic[0],
+								"question1":dic[1],
+								"question2":dic[2],
+								"question3":dic[3],
+								"question4":dic[4],
+								"question5":dic[5],
+								"question6":dic[6],
+								"question7":dic[7],
+								"question8":dic[8],
+								"question9":dic[9],
+								time:usetime
+							},function(data,status){
+							var mydata = jQuery.parseJSON(data);
+							window.location.href = "/result?userid="+mydata.userid+"&goal="+mydata.goal
+							});
+						});
+					});
+					window.setInterval(function(){
+						now_time += 5;
+						$.post("/question",
+							{
+								now_time:now_time
+							},function(data,status){
+								var retdata = JSON.parse(data);
+								if(retdata['code'] == 300){
+									alert(retdata['text']);
+								}
+								else if(retdata['code'] == 400){
+									alert(retdata['text']);
+									$("#myForm").submit();
+								}
+							}
+							)
+					},300000);
+			</script>
+		</html>
